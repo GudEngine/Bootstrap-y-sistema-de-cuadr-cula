@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="es" data-bs-theme="light">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Iniciar sesión — SiGeRu</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.3/css/bootstrap.min.css" rel="stylesheet">
+    <link href="../css/style.css" rel="stylesheet">
+</head>
+
+<body class="d-flex flex-column min-vh-100">
+
+    <!-- Navbar -->
+    <header class="navbar bg-body border-bottom">
+        <div class="container-fluid">
+            <a href="index.html" class="navbar-brand d-flex align-items-center gap-2">
+                <img src="../img/logo.png" alt="SiGeRu" width="32" height="32">
+                <span class="font-serif fw-bold fs-6">SiGeRu</span>
+            </a>
+            <a href="index.html" class="btn btn-link btn-sm text-body-secondary text-decoration-none">
+                ← Volver al inicio
+            </a>
+        </div>
+    </header>
+
+    <div class="row g-0 flex-grow-1">
+
+        <!-- Información -->
+        <div class="col-lg-6 brand-gradient-side d-lg-flex flex-column justify-content-center text-white p-5">
+            <img src="../img/logo.png" alt="SiGeRu" width="80" height="80" class="mb-4 opacity-75">
+            <h2 class="font-serif fw-bold mb-3" style="font-size: 32px;">Gestión de residuos urbanos al alcance de todos</h2>
+            <p class="text-white-50" style="max-width: 360px;">
+                SiGeRu es la plataforma de la Intendencia de Montevideo
+                para hacer reclamos, consultar contenedores y acceder
+                a información sobre reciclaje.
+            </p>
+            <div class="border-top border-white-50 mt-5 pt-4 text-white-50" style="font-size: 12px;">
+                Desarrollado por <strong class="text-white">Gud Engine S.A.S</strong> para la Intendencia de Montevideo
+            </div>
+        </div>
+
+        <!-- Formularios -->
+        <div class="col-lg-6 d-flex align-items-center justify-content-center p-4 p-lg-5">
+            <div class="animate-fade-up w-100" style="max-width: 380px;">
+
+                <!-- Login -->
+                <form id="form_login" class="d-flex flex-column gap-3">
+
+                    <h1 class="fw-bold mb-2 fs-3">Iniciar sesión</h1>
+                    <p class="text-body-secondary small mb-1">Ingresá con tu e-mail y contraseña para acceder a tu cuenta.</p>
+
+                    <!-- Rol -->
+                    <div>
+                        <label for="login_rol" class="form-label small fw-semibold">Rol</label>
+                        <select id="login_rol" class="form-select" required>
+                            <option value="" selected disabled>Seleccione su rol</option>
+                            <option value="vecino">Vecino</option>
+                            <option value="administrador">Administrador</option>
+                            <option value="recolector">Recolector</option>
+                            <option value="operario_acopio">Operario centro de acopio</option>
+                        </select>
+                    </div>
+
+                    <!-- E-mail -->
+                    <div>
+                        <label for="login_email" class="form-label small fw-semibold">E-mail</label>
+                        <input type="email" id="login_email" class="form-control" placeholder="jaimito@correo.com" required>
+                    </div>
+
+                    <!-- Contraseña -->
+                    <div>
+                        <label for="login_password" class="form-label small fw-semibold">Contraseña</label>
+                        <input type="password" id="login_password" class="form-control" placeholder="contraseña" required>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary w-100 py-2 mt-1">Ingresar</button>
+
+                    <div class="d-flex justify-content-between pt-1">
+                        <button type="button" class="btn btn-link btn-sm text-primary text-decoration-none p-0" onclick="window.location.href='registro.html'">
+                            Crear cuenta
+                        </button>
+                        <button type="button" id="link_olvide" class="btn btn-link btn-sm text-body-secondary text-decoration-none p-0">
+                            Olvidé mi contraseña
+                        </button>
+                    </div>
+
+                </form>
+
+                <!-- Recuperar contraseña -->
+                <form id="form_recuperar" class="d-none flex-column gap-3">
+
+                    <button type="button" id="link_volver_login" class="btn btn-link btn-sm text-body-secondary text-decoration-none p-0 mb-2 d-flex align-items-center gap-2">
+                        ← Volver
+                    </button>
+
+                    <h1 class="fw-bold mb-2 fs-4">Recuperar contraseña</h1>
+                    <p class="text-body-secondary small mb-2">Ingresá tu CI para recibir instrucciones.</p>
+
+                    <input type="text" id="ci_recuperar" class="form-control" placeholder="Cédula de Identidad" maxlength="8" inputmode="numeric">
+
+                    <button type="submit" class="btn btn-primary w-100">Enviar instrucciones</button>
+
+                </form>
+
+                <!-- Instrucciones enviadas -->
+                <div id="vista_enviado" class="d-none text-center">
+
+                    <div class="mx-auto mb-3 d-flex align-items-center justify-content-center bg-body-tertiary rounded-circle" style="width:56px;height:56px;">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#3E8E64" stroke-width="2.5">
+                            <polyline points="20 6 9 17 4 12" />
+                        </svg>
+                    </div>
+
+                    <h2 class="fw-bold mb-2 fs-4">Instrucciones enviadas</h2>
+                    <p class="mb-4 text-body-secondary small">Revisá tu correo asociado a la CI ingresada.</p>
+
+                    <button type="button" id="btn_volver_inicio_sesion" class="btn btn-outline-primary">
+                        Volver al inicio de sesión
+                    </button>
+
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.3/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+
+        // Modo oscuro
+        //F12, Application, localstorage, localhost, ahí verán una clave llamada "sigeru_theme"
+        //su valor idealmente vendrá ya dado del index, caso contrario se asigna 'light' por defecto
+        const tema = localStorage.getItem('sigeru_theme') || 'light';
+        document.documentElement.setAttribute('data-bs-theme', tema);
+
+        // Login
+        document.getElementById('form_login').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const rol = document.getElementById('login_rol').value;
+            const email = document.getElementById('login_email').value.trim();
+            const password = document.getElementById('login_password').value;
+
+            if (!rol) {
+                alert('⚠️ Debe seleccionar su rol.');
+                return;
+            }
+
+            if (!email) {
+                alert('⚠️ Debe ingresar su e-mail.');
+                return;
+            }
+
+            if (!password) {
+                alert('⚠️ Debe ingresar su contraseña.');
+                return;
+            }
+
+            const usuario = {
+                usr_rol: rol,
+                usr_email: email,
+                usr_password: password
+            };
+
+            fetch('../controlador/api_usuarios.php/login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(usuario)
+            })
+            .then(response => response.json())
+            .then(respuesta => {
+                alert(respuesta.mensaje);
+
+                if (respuesta.token) {
+                    document.cookie = 'token=' + respuesta.token + '; path=/';
+
+                    const rutas = {
+                        administrador: 'backoffice.php',
+                        operario_acopio: 'centro_acopio.php',
+                        recolector: 'cuadrilla.php',
+                        vecino: 'index.html'
+                    };
+
+                    window.location.href = rutas[respuesta.rol] || 'index.html';
+                }
+            })
+            .catch(error => {
+                console.error('Error al conectar con la API:', error);
+                alert('⚠️ Hubo un error al conectar con el servidor.');
+            });
+        });
+
+        // Recuperar contraseña
+        document.getElementById('link_olvide').addEventListener('click', function() {
+            document.getElementById('form_login').classList.add('d-none');
+            document.getElementById('form_recuperar').classList.remove('d-none');
+            document.getElementById('form_recuperar').classList.add('d-flex');
+        });
+
+        document.getElementById('link_volver_login').addEventListener('click', function() {
+            document.getElementById('form_recuperar').classList.add('d-none');
+            document.getElementById('form_recuperar').classList.remove('d-flex');
+            document.getElementById('form_login').classList.remove('d-none');
+        });
+
+        document.getElementById('ci_recuperar').addEventListener('input', function() {
+            this.value = this.value.replace(/\D/g, '');
+        });
+
+        // Recuperación de contraseña pendiente de implementar.
+        document.getElementById('form_recuperar').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            if (!document.getElementById('ci_recuperar').value) {
+                alert('⚠️ Debe ingresar su Cédula de Identidad.');
+                return;
+            }
+
+            document.getElementById('form_recuperar').classList.add('d-none');
+            document.getElementById('form_recuperar').classList.remove('d-flex');
+            document.getElementById('vista_enviado').classList.remove('d-none');
+        });
+
+        document.getElementById('btn_volver_inicio_sesion').addEventListener('click', function() {
+            document.getElementById('vista_enviado').classList.add('d-none');
+            document.getElementById('form_login').classList.remove('d-none');
+            document.getElementById('ci_recuperar').value = '';
+        });
+    </script>
+</body>
+</html>

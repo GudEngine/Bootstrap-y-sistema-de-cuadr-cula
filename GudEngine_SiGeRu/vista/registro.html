@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="es" data-bs-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crear cuenta — SiGeRu</title>
+
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.3/css/bootstrap.min.css" rel="stylesheet">
+    <link href="../css/style.css" rel="stylesheet">
+</head>
+
+<body class="d-flex flex-column min-vh-100 bg-body">
+
+    <!-- Barra superior -->
+    <header class="navbar bg-body border-bottom">
+        <div class="container-fluid px-4">
+            <a href="login.html" class="navbar-brand d-flex align-items-center gap-2">
+                <img src="../img/logo.png" alt="SiGeRu" width="32" height="32">
+                <span class="font-serif fw-bold fs-6">SiGeRu</span>
+            </a>
+
+            <a href="login.html" class="btn btn-link btn-sm text-body-secondary text-decoration-none">
+                ← Volver al inicio de sesión
+            </a>
+        </div>
+    </header>
+
+    <!-- Registro -->
+    <div class="flex-grow-1 d-flex align-items-center justify-content-center px-3 py-5">
+        <div class="card shadow animate-fade-up" style="max-width: 460px; width: 100%;">
+            <div class="card-body p-4 p-md-5">
+
+                <form id="form_registro" class="d-flex flex-column gap-3">
+                    <h1 class="fw-bold mb-1 fs-3">Crear cuenta</h1>
+                    <p class="text-body-secondary small mb-2">
+                        Registrate para acceder a todos los servicios de SiGeRu.
+                    </p>
+
+                    <div class="row g-3">
+                        <div class="col-6">
+                            <label for="reg_ci" class="form-label small fw-semibold">CI</label>
+                            <input type="text" id="reg_ci" class="form-control" placeholder="12345678" maxlength="8" inputmode="numeric" required>
+                        </div>
+
+                        <div class="col-6">
+                            <label for="reg_nombre" class="form-label small fw-semibold">Nombre</label>
+                            <input type="text" id="reg_nombre" class="form-control" placeholder="Pepe" required>
+                        </div>
+                    </div>
+
+                    <div>
+                        <label for="reg_apellido" class="form-label small fw-semibold">Apellido</label>
+                        <input type="text" id="reg_apellido" class="form-control" placeholder="Bermúdez" required>
+                    </div>
+
+                    <div>
+                        <label for="reg_email" class="form-label small fw-semibold">E-mail</label>
+                        <input type="email" id="reg_email" class="form-control" placeholder="tu@email.com" required>
+                    </div>
+
+                    <div>
+                        <label for="reg_password" class="form-label small fw-semibold">Contraseña</label>
+                        <input type="password" id="reg_password" class="form-control" placeholder="Mínimo 6 caracteres" required>
+
+                        <div id="pw_strength_wrap" class="d-none align-items-center gap-2 mt-2">
+                            <div class="progress flex-grow-1" style="height: 4px;">
+                                <div id="pw_strength_fill" class="progress-bar" role="progressbar" style="width: 0%;"></div>
+                            </div>
+                            <span id="pw_strength_label" class="small fw-semibold" style="min-width: 44px;"></span>
+                        </div>
+                    </div>
+
+                    <div>
+                        <label for="reg_password_2" class="form-label small fw-semibold">Repetir contraseña</label>
+                        <input type="password" id="reg_password_2" class="form-control" placeholder="••••••••" required>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary w-100 py-2 mt-1">
+                        Registrarse
+                    </button>
+
+                    <p class="text-center mb-0 small text-body-secondary">
+                        ¿Ya tenés cuenta?
+                        <a href="login.html" class="text-primary text-decoration-none fw-semibold">
+                            Iniciá sesión
+                        </a>
+                    </p>
+                </form>
+
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.3/js/bootstrap.bundle.min.js"></script>
+
+    <!-- JS de la página -->
+    <script>
+        // Tema guardado
+        const tema = localStorage.getItem('sigeru_theme') || 'light';
+        document.documentElement.setAttribute('data-bs-theme', tema);
+
+        // Limitar CI a números
+        document.getElementById('reg_ci').addEventListener('input', function() {
+            this.value = this.value.replace(/\D/g, '');
+        });
+
+        // Fuerza de contraseña
+        document.getElementById('reg_password').addEventListener('input', function() {
+            const longitud = this.value.length;
+
+            if (longitud === 0) {
+                document.getElementById('pw_strength_wrap').classList.add('d-none');
+                return;
+            }
+
+            document.getElementById('pw_strength_wrap').classList.remove('d-none');
+            document.getElementById('pw_strength_wrap').classList.add('d-flex');
+
+            let fuerza;
+            let color;
+            let etiqueta;
+
+            if (longitud < 6) {
+                fuerza = 1;
+                color = '#ef4444';
+                etiqueta = 'Débil';
+            } else if (longitud < 10) {
+                fuerza = 2;
+                color = '#f59e0b';
+                etiqueta = 'Regular';
+            } else {
+                fuerza = 3;
+                color = '#3E8E64';
+                etiqueta = 'Fuerte';
+            }
+
+            document.getElementById('pw_strength_fill').style.width = `${(fuerza / 3) * 100}%`;
+            document.getElementById('pw_strength_fill').style.backgroundColor = color;
+            document.getElementById('pw_strength_label').textContent = etiqueta;
+            document.getElementById('pw_strength_label').style.color = color;
+        });
+
+        // Registro
+        document.getElementById('form_registro').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const ci = document.getElementById('reg_ci').value.trim();
+            const nombre = document.getElementById('reg_nombre').value.trim();
+            const apellido = document.getElementById('reg_apellido').value.trim();
+            const email = document.getElementById('reg_email').value.trim();
+            const password = document.getElementById('reg_password').value;
+            const password_2 = document.getElementById('reg_password_2').value;
+
+            if (!/^\d{6,8}$/.test(ci)) {
+                alert('⚠️ La Cédula de Identidad debe tener entre 6 y 8 dígitos.');
+                return;
+            }
+
+            if (nombre.length < 2) {
+                alert('⚠️ Ingresá tu nombre.');
+                return;
+            }
+
+            if (apellido.length < 2) {
+                alert('⚠️ Ingresá tu apellido.');
+                return;
+            }
+
+            if (!email) {
+                alert('⚠️ Ingresá tu e-mail.');
+                return;
+            }
+
+            if (password.length < 6) {
+                alert('⚠️ La contraseña debe tener al menos 6 caracteres.');
+                return;
+            }
+
+            if (password !== password_2) {
+                alert('⚠️ Las contraseñas no coinciden.');
+                return;
+            }
+
+            const nuevo_usuario = {
+                usr_ci: parseInt(ci),
+                usr_name: nombre,
+                usr_email: email,
+                usr_password: password,
+                usr_apellido: apellido
+            };
+
+            fetch('../controlador/api_usuarios.php/registro', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(nuevo_usuario)
+            })
+            .then(response => response.json())
+            .then(respuesta => {
+                alert(respuesta.mensaje);
+
+                if (respuesta.mensaje.includes('con éxito')) {
+                    window.location.href = 'login.html';
+                }
+            })
+            .catch(error => {
+                console.error('Error al registrar:', error);
+                alert('⚠️ Hubo un fallo crítico al conectar con la API.');
+            });
+        });
+    </script>
+</body>
+</html>

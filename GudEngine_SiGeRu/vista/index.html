@@ -1,0 +1,1401 @@
+<!DOCTYPE html>
+<html lang="es" data-bs-theme="light">
+
+<head>
+    <script>document.documentElement.setAttribute('data-bs-theme', localStorage.getItem('sigeru_theme') || 'light')</script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SiGeRu — Sistema de Gestión de Residuos Urbanos</title>
+    <meta name="description"
+        content="SiGeRu es la plataforma de la Intendencia de Montevideo para reportar incidencias, consultar puntos de reciclaje y gestionar residuos urbanos.">
+    <meta name="author" content="GudEngine S.A.S">
+    <!-- Bootstrap 5 -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.3/css/bootstrap.min.css" rel="stylesheet">
+    <link href="../css/style.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+
+
+</head>
+
+<body>
+
+    <!-- Navbar -->
+    <header class="navbar navbar-expand-md sticky-top bg-body border-bottom">
+        <div class="container-xxl">
+            <a href="index.html" class="navbar-brand d-flex align-items-center gap-2">
+                <img src="../img/logo.png" alt="SiGeRu isotipo" width="44" height="44">
+                <span class="lh-1">
+                    <span class="d-block font-serif fw-bold fs-6">SiGeRu</span>
+                    <span class="d-block text-body-secondary" style="font-size:10px;">Intendencia de Montevideo</span>
+                </span>
+            </a>
+
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#nav_main"
+                aria-controls="nav_main" aria-label="Abrir menú">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="nav_main">
+                <nav class="navbar-nav me-auto ms-md-4">
+                    <a href="#" class="nav-link active">Inicio</a>
+                    <a href="#seccion_reclamos" class="nav-link">Reclamos</a>
+                    <a href="#seccion_contenedores" class="nav-link">Contenedores</a>
+                    <a href="#seccion_clasificacion" class="nav-link">Clasificación</a>
+                </nav>
+
+                <div class="d-flex align-items-center gap-2 mt-3 mt-md-0">
+                    <button type="button" id="cambiar_tema"
+                        class="btn btn-outline-secondary btn-sm rounded-circle p-0 d-flex align-items-center justify-content-center"
+                        style="width:36px;height:36px;" title="Cambiar tema">
+                        <i class="bi bi-moon-stars-fill"></i>
+                    </button>
+                    <script>if (document.documentElement.getAttribute('data-bs-theme') === 'dark')
+                            document.getElementById('cambiar_tema').innerHTML = '<i class="bi bi-sun-fill"></i>'</script>
+
+                    <div id="zona_autenticacion" class="d-flex align-items-center gap-2">
+                        <a href="login.html" class="btn btn-success btn-sm">Iniciar sesión</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero -->
+    <section class="position-relative overflow-hidden" style="background: linear-gradient(135deg, #1B4D52, #2B6B50);">
+        <div class="container-xxl py-5">
+            <div class="row align-items-center g-5">
+
+                <div class="col-lg-6">
+                    <div class="animate-fade-up delay-100 mb-4">
+                        <h1 class="fw-bold text-white mb-3" style="font-size: clamp(2rem, 4vw, 3rem);">Sistema de
+                            Gestión de Residuos Urbanos</h1>
+                        <p class="text-white-50 fs-6" style="max-width: 500px;">
+                            SiGeRu es la plataforma donde toda la población de Montevideo puede acceder a
+                            información sobre gestión de residuos, reportar incidencias y consultar
+                            los puntos de reciclaje de su municipio.
+                        </p>
+                    </div>
+
+                    <div class="animate-fade-up delay-200 d-flex flex-wrap gap-3">
+                        <a href="#seccion_reclamos" class="btn btn-success btn-lg">Hacer un reclamo</a>
+                        <a href="#seccion_clasificacion" class="btn btn-outline-light btn-lg">Guía de clasificación</a>
+                    </div>
+                </div>
+
+                <div class="col-lg-6">
+                    <div class="animate-fade-up delay-300">
+
+                        <!-- Carrusel -->
+                        <div id="carrusel_modulo" class="carousel slide rounded-4 overflow-hidden shadow-lg"
+                            data-bs-ride="carousel" data-bs-interval="5500">
+
+                            <div class="carousel-indicators">
+                                <button type="button" data-bs-target="#carrusel_modulo" data-bs-slide-to="0"
+                                    class="active" aria-current="true"></button>
+                                <button type="button" data-bs-target="#carrusel_modulo" data-bs-slide-to="1"></button>
+                                <button type="button" data-bs-target="#carrusel_modulo" data-bs-slide-to="2"></button>
+                                <button type="button" data-bs-target="#carrusel_modulo" data-bs-slide-to="3"></button>
+                            </div>
+
+                            <div class="carousel-inner">
+
+                                <div class="carousel-item active" style="height:320px;">
+                                    <img src="../img/carrusel-1.png" class="w-100 h-100 object-fit-cover"
+                                        alt="Residuos urbanos bajo control">
+                                    <div
+                                        class="carousel-caption-fade position-absolute top-0 start-0 end-0 bottom-0 d-flex flex-column justify-content-end text-start p-4">
+                                        <span
+                                            class="badge rounded-pill bg-white bg-opacity-25 text-white mb-2 align-self-start">Gestión
+                                            Integrada</span>
+                                        <h3 class="text-white fw-bold h5">Residuos urbanos bajo control</h3>
+                                        <p class="text-white-50 mb-0" style="max-width:380px;">Monitoreo centralizado de
+                                            recolección, tratamiento y recursos en todo Montevideo.</p>
+                                    </div>
+                                </div>
+
+                                <div class="carousel-item" style="height:320px;">
+                                    <img src="../img/carrusel-2.png" class="w-100 h-100 object-fit-cover"
+                                        alt="Materiales reciclables">
+                                    <div
+                                        class="carousel-caption-fade position-absolute top-0 start-0 end-0 bottom-0 d-flex flex-column justify-content-end text-start p-4">
+                                        <span
+                                            class="badge rounded-pill bg-white bg-opacity-25 text-white mb-2 align-self-start">Contenedores
+                                            clasificados</span>
+                                        <h3 class="text-white fw-bold h5">Materiales reciclables</h3>
+                                        <p class="text-white-50 mb-0" style="max-width:380px;">Plástico, metal, papel,
+                                            cartón y vidrio — limpios, secos y compactados.</p>
+                                    </div>
+                                </div>
+
+                                <div class="carousel-item" style="height:320px;">
+                                    <img src="../img/carrusel-3.png" class="w-100 h-100 object-fit-cover"
+                                        alt="Flota al servicio de la ciudad">
+                                    <div
+                                        class="carousel-caption-fade position-absolute top-0 start-0 end-0 bottom-0 d-flex flex-column justify-content-end text-start p-4">
+                                        <span
+                                            class="badge rounded-pill bg-white bg-opacity-25 text-white mb-2 align-self-start">Montevideo
+                                            más verde</span>
+                                        <h3 class="text-white fw-bold h5">Flota al servicio de la ciudad</h3>
+                                        <p class="text-white-50 mb-0" style="max-width:380px;">Operarios y vehículos de
+                                            la IM recorren la ciudad para mantenerla limpia.</p>
+                                    </div>
+                                </div>
+
+                                <div class="carousel-item" style="height:320px;">
+                                    <img src="../img/carrusel-4.png" class="w-100 h-100 object-fit-cover"
+                                        alt="Residuos mezclados y clasificados">
+                                    <div
+                                        class="carousel-caption-fade position-absolute top-0 start-0 end-0 bottom-0 d-flex flex-column justify-content-end text-start p-4">
+                                        <span
+                                            class="badge rounded-pill bg-white bg-opacity-25 text-white mb-2 align-self-start">Red
+                                            de recolección</span>
+                                        <h3 class="text-white fw-bold h5">Residuos mezclados y clasificados</h3>
+                                        <p class="text-white-50 mb-0" style="max-width:380px;">Una flota moderna
+                                            optimiza rutas y tiempos de recolección en cada municipio.</p>
+                                    </div>
+                                </div>
+
+                            </div>
+
+                            <button class="carousel-control-prev" type="button" data-bs-target="#carrusel_modulo"
+                                data-bs-slide="prev">
+                                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                <span class="visually-hidden">Anterior</span>
+                            </button>
+
+                            <button class="carousel-control-next" type="button" data-bs-target="#carrusel_modulo"
+                                data-bs-slide="next">
+                                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                <span class="visually-hidden">Siguiente</span>
+                            </button>
+
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- Estadísticas -->
+    <section class="bg-body border-bottom">
+        <div class="container-xxl px-3 py-4">
+            <div class="row g-4 text-center">
+
+                <div class="col-6 col-md-3">
+                    <p class="font-serif fw-bold text-success display-6 mb-0">8</p>
+                    <p class="text-body-secondary small fw-medium mb-0">Municipios cubiertos</p>
+                </div>
+
+                <div class="col-6 col-md-3">
+                    <p class="font-serif fw-bold text-success display-6 mb-0">50+</p>
+                    <p class="text-body-secondary small fw-medium mb-0">Puntos Verdes activos</p>
+                </div>
+
+                <div class="col-6 col-md-3">
+                    <p class="font-serif fw-bold text-success display-6 mb-0">1950</p>
+                    <p class="text-body-secondary small fw-medium mb-0">Línea de atención gratuita</p>
+                </div>
+
+                <div class="col-6 col-md-3">
+                    <p class="font-serif fw-bold text-success display-6 mb-0">24/7</p>
+                    <p class="text-body-secondary small fw-medium mb-0">Disponibilidad del sistema</p>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- Tarjetas -->
+    <section class="container-xxl px-3 py-5">
+        <div class="text-center mb-5">
+            <h2 class="fw-bold mb-2 fs-2">¿Qué deseas hacer hoy?</h2>
+            <p class="text-body-secondary">Accede a los servicios de gestión de residuos de Montevideo.</p>
+        </div>
+
+        <div class="row g-4">
+
+            <div class="col-sm-6 col-lg-3">
+                <a href="#seccion_reclamos" class="card card-hover h-100 text-decoration-none shadow-sm">
+                    <div class="card-body d-flex flex-column gap-3 p-4">
+                        <div class="text-primary d-flex justify-content-center">
+                            <i class="bi bi-exclamation-triangle fs-4"></i>
+                        </div>
+                        <div>
+                            <p class="card-title fw-semibold mb-1 text-body">Hacer un reclamo</p>
+                            <p class="card-text text-body-secondary small">Reporta problemas con contenedores en tu
+                                zona.</p>
+                        </div>
+                        <p class="text-primary small fw-semibold mt-auto mb-0">Ir →</p>
+                    </div>
+                </a>
+            </div>
+
+            <div class="col-sm-6 col-lg-3">
+                <a href="#seccion_contenedores" class="card card-hover h-100 text-decoration-none shadow-sm">
+                    <div class="card-body d-flex flex-column gap-3 p-4">
+                        <div class="text-primary d-flex justify-content-center">
+                            <i class="bi bi-geo-alt fs-4"></i>
+                        </div>
+                        <div>
+                            <p class="card-title fw-semibold mb-1 text-body">Mapa de contenedores</p>
+                            <p class="card-text text-body-secondary small">Encuentra los contenedores y Puntos Verdes de
+                                tu municipio.</p>
+                        </div>
+                        <p class="text-primary small fw-semibold mt-auto mb-0">Ir →</p>
+                    </div>
+                </a>
+            </div>
+
+            <div class="col-sm-6 col-lg-3">
+                <a href="#seccion_clasificacion" class="card card-hover h-100 text-decoration-none shadow-sm">
+                    <div class="card-body d-flex flex-column gap-3 p-4">
+                        <div class="text-primary d-flex justify-content-center">
+                            <i class="bi bi-arrow-repeat fs-4"></i>
+                        </div>
+                        <div>
+                            <p class="card-title fw-semibold mb-1 text-body">Guía de clasificación</p>
+                            <p class="card-text text-body-secondary small">Información oficial de la IM sobre
+                                clasificación de residuos.</p>
+                        </div>
+                        <p class="text-primary small fw-semibold mt-auto mb-0">Ir →</p>
+                    </div>
+                </a>
+            </div>
+
+            <div class="col-sm-6 col-lg-3">
+                <a href="#seccion_historial" class="card card-hover h-100 text-decoration-none shadow-sm">
+                    <div class="card-body d-flex flex-column gap-3 p-4">
+                        <div class="text-primary d-flex justify-content-center">
+                            <i class="bi bi-file-earmark-text fs-4"></i>
+                        </div>
+                        <div>
+                            <p class="card-title fw-semibold mb-1 text-body">Historial de reclamos</p>
+                            <p class="card-text text-body-secondary small">Consulta el estado de tus reclamos.</p>
+                        </div>
+                        <p class="text-primary small fw-semibold mt-auto mb-0">Ir →</p>
+                    </div>
+                </a>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- Banner IM -->
+    <section class="border-top border-bottom">
+        <div class="container-xxl py-4 d-flex flex-column flex-md-row align-items-center justify-content-between gap-4">
+            <div class="d-flex align-items-center gap-3">
+                <img src="../img/logo.png" alt="SiGeRu" width="56" height="56">
+                <div>
+                    <p class="font-serif fw-bold mb-0">Un servicio de la Intendencia de Montevideo</p>
+                    <p class="text-body-secondary small mb-0">Desarrollado por Gud Engine S.A.S para optimizar la
+                        gestión urbana de residuos.</p>
+                </div>
+            </div>
+            <!--flex-shrink-0 evita que se achique el contenido si el padre está achicandose-->
+            <a href="https://montevideo.gub.uy/tipo/area-tematica/ambiente/limpieza" target="_blank"
+                class="btn btn-outline-primary flex-shrink-0">
+                Sitio oficial de la IM →
+            </a>
+        </div>
+    </section>
+
+    <!-- Sección Reclamos -->
+    <section id="seccion_reclamos" style="background: linear-gradient(135deg, #1B4D52, #2B6B50);">
+        <div class=" px-3 py-5">
+
+            <div class="text-center text-white mb-4 animate-fade-up">
+                <a href="#" class="text-white text-decoration-none small fw-semibold">
+                    ↑ Volver arriba
+                </a>
+                <h2 class="fw-bold my-2">Hacer un reclamo</h2>
+                <p class="mb-0 text-white-50">
+                    Informanos sobre problemas relacionados con la gestión de residuos.
+                </p>
+            </div>
+
+            <div class="card bg-body shadow-sm mx-auto animate-fade-up" style="max-width: 720px;">
+                <div class="card-body p-4 p-md-5">
+
+                    <form id="form_reclamo" class="d-flex flex-column gap-3">
+
+                        <div>
+                            <label for="incidencia_municipio" class="form-label fw-semibold">
+                                Municipio
+                            </label>
+                            <select id="incidencia_municipio" class="form-select" required>
+                                <option value="" disabled selected>Seleccioná un municipio</option>
+                                <option value="A">Municipio A</option>
+                                <option value="B">Municipio B</option>
+                                <option value="C">Municipio C</option>
+                                <option value="CH">Municipio CH</option>
+                                <option value="D">Municipio D</option>
+                                <option value="E">Municipio E</option>
+                                <option value="F">Municipio F</option>
+                                <option value="G">Municipio G</option>
+                            </select>
+                        </div>
+
+                        <div>
+                            <label for="incidencia_tema" class="form-label fw-semibold">
+                                Tema de la incidencia
+                            </label>
+                            <select id="incidencia_tema" class="form-select" required>
+                                <option value="" disabled selected>Seleccioná un tema</option>
+                                <option value="Basura suelta">Basura suelta</option>
+                                <option value="Mover contenedor">Mover contenedor</option>
+                                <option value="Contenedor desbordado">Contenedor desbordado</option>
+                            </select>
+                        </div>
+
+                        <div>
+                            <label for="incidencia_tipo_residuo" class="form-label fw-semibold">
+                                Tipo de contenedor/basura que causa el problema
+                            </label>
+                            <select id="incidencia_tipo_residuo" class="form-select" required>
+                                <option value="" disabled selected>Seleccioná una opción</option>
+                                <option value="mezclados">Mezclados</option>
+                                <option value="reciclaje">Reciclables</option>
+                                <option value="volqueta">Grandes/de Volqueta(Detallar en la descripcion)</option>
+                            </select>
+                        </div>
+
+                        <!-- 1. Dirección (Calle y Número de Puerta) -->
+                        <div class="row mb-3">
+                            <div class="col-8">
+                                <label for="incidencia_calle" class="form-label small fw-bold">Calle</label>
+                                <input type="text" id="incidencia_calle" class="form-control" maxlength="29"
+                                    placeholder="Ej: Av. Italia" required>
+                            </div>
+                            <div class="col-4">
+                                <label for="incidencia_num_puerta" class="form-label small fw-bold">N° Puerta</label>
+                                <input type="number" id="incidencia_num_puerta" class="form-control" min="1"
+                                    placeholder="Ej: 2514" required>
+                            </div>
+                        </div>
+
+                        <div>
+                            <label for="incidencia_descripcion" class="form-label fw-semibold">
+                                Descripción
+                            </label>
+                            <textarea id="incidencia_descripcion" class="form-control" rows="5"
+                                placeholder="Describí el problema..." required maxlength="500"></textarea>
+                        </div>
+
+                        <button type="submit" class="btn btn-success w-100">
+                            <i class="bi bi-send me-1"></i>
+                            Registrar incidencia
+                        </button>
+
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+    <!-- Sección Contenedores -->
+    <section id="seccion_contenedores" class="bg-body">
+        <div class="container-xxl px-3 py-5">
+
+            <div class="text-center mb-4 animate-fade-up">
+                <a href="#" class="text-body-secondary text-decoration-none small fw-semibold">
+                    ↑ Volver arriba
+                </a>
+                <h2 class="fw-bold mt-2 mb-2">Mapa de contenedores</h2>
+                <p class="text-body-secondary mb-0">
+                    Encontrá los contenedores disponibles en tu municipio.
+                </p>
+            </div>
+
+            <div class="card shadow-sm mb-4 animate-fade-up">
+                <div class="card-body p-0">
+                    <div id="mapa_circuitos"
+                        class="d-flex flex-column justify-content-center align-items-center text-body-secondary"
+                        style="height: 320px;">
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Pensar en como implementar contenedores que se sepa su intendencia
+            <div class="card shadow-sm animate-fade-up">
+                <div class="card-body p-4">
+
+                    <h3 class="fw-semibold fs-5 mb-3">
+                        Contenedores por municipio
+                    </h3>
+
+                    <div class="accordion" id="acordeon_municipios">
+
+
+                    </div>
+
+                </div>
+            </div>
+        -->
+        </div>
+    </section>
+
+
+    <!-- Sección Clasificación -->
+    <section id="seccion_clasificacion" style="background: linear-gradient(135deg, #3E8E64, #8BAF86);">
+
+        <div class="container-xxl px-3 py-5">
+
+            <!-- Encabezado -->
+            <div class="text-center text-white mb-4 animate-fade-up">
+
+                <a href="#" class="d-inline-flex align-items-center gap-2 text-white-50 text-decoration-none mb-3"
+                    style="font-size:14px;">
+                    ↑ Volver arriba
+                </a>
+
+                <h2 class="fw-bold text-white mb-1 fs-3">
+                    Guía de Clasificación
+                </h2>
+
+                <p class="text-white-50 mb-0" style="font-size:15px;">
+                    Información oficial de la Intendencia de Montevideo sobre qué va en cada contenedor.
+                </p>
+
+            </div>
+
+
+            <div class="mx-auto" style="max-width:960px;">
+
+                <div class="card bg-body shadow-sm animate-fade-up mb-4">
+
+                    <div class="card-body d-flex flex-wrap align-items-center justify-content-between gap-3">
+
+                        <div>
+                            <p class="fw-bold mb-0" style="font-size:14px;">
+                                Fuente: Intendencia de Montevideo
+                            </p>
+
+                            <p class="text-body-secondary small mb-0">
+                                Programa de gestión de residuos sólidos urbanos — 2026
+                            </p>
+                        </div>
+
+                        <a href="https://montevideo.gub.uy/areas-tematicas/medio-ambiente/reciclaje-y-residuos"
+                            target="_blank" class="btn btn-outline-primary btn-sm">
+                            Sitio oficial IM →
+                        </a>
+
+                    </div>
+
+                </div>
+
+
+                <!-- Categorías -->
+                <div class="accordion animate-fade-up delay-100" id="acordeon_categorias">
+
+
+                    <!-- Residuos secos -->
+                    <div class="accordion-item">
+
+                        <h2 class="accordion-header">
+
+                            <button class="accordion-button" type="button" data-bs-toggle="collapse"
+                                data-bs-target="#categoria_secos">
+
+                                <span class="rounded-3 d-inline-flex align-items-center justify-content-center me-3"
+                                    style="width:42px; height:42px; background:var(--bs-tertiary-bg);">
+
+                                    <span class="rounded-circle"
+                                        style="width:16px; height:16px; background:#3E8E64; display:inline-block;">
+                                    </span>
+
+                                </span>
+
+                                <span>
+
+                                    <strong class="d-block" style="font-size:15px;">
+                                        Residuos Secos Reciclables
+                                    </strong>
+
+                                    <span class="text-body-secondary" style="font-size:12px;">
+                                        Contenedor verde clasificado o Puntos Verdes
+                                    </span>
+
+                                </span>
+
+                                <span class="badge rounded-pill ms-auto me-3"
+                                    style="background:var(--bs-tertiary-bg); color:#3E8E64;">
+                                    5 elementos
+                                </span>
+
+                            </button>
+
+                        </h2>
+
+                        <!--data-bs-parent hace que si yo abro una categoría la otra que esté abierta se cierre-->
+                        <div id="categoria_secos" class="accordion-collapse collapse show"
+                            data-bs-parent="#acordeon_categorias">
+
+                            <div class="accordion-body">
+
+                                <p class="text-body-secondary small">
+                                    Se depositan en los contenedores verdes habilitados por la IM
+                                    o en los Puntos Verdes distribuidos por la ciudad.
+                                </p>
+
+
+                                <div class="d-flex flex-column gap-2 ">
+
+                                    <div class="d-flex gap-3 p-2 rounded-3 align-items-center"
+                                        style="background:var(--bs-tertiary-bg);">
+
+                                        <span class="badge rounded-pill border flex-shrink-0 "
+                                            style="font-size:12px; color:#3E8E64; background:var(--bs-body-bg);">
+                                            Papel y cartón
+                                        </span>
+
+                                        <p class="small mb-0">
+                                            Diarios, revistas, cajas, cartones limpios y secos.
+                                            No incluye papel higiénico ni servilletas usadas.
+                                        </p>
+
+                                    </div>
+
+
+                                    <div class="d-flex gap-3 p-2 rounded-3 align-items-center"
+                                        style="background:var(--bs-tertiary-bg);">
+
+                                        <span class="badge rounded-pill border flex-shrink-0"
+                                            style="font-size:12px; color:#3E8E64; background:var(--bs-body-bg);">
+                                            Plásticos
+                                        </span>
+
+                                        <p class="small mb-0">
+                                            Botellas PET, envases de limpieza y alimentos,
+                                            bolsas plásticas. Deben estar limpios y secos.
+                                        </p>
+
+                                    </div>
+
+
+                                    <div class="d-flex gap-3 p-2 rounded-3 align-items-center"
+                                        style="background:var(--bs-tertiary-bg);">
+
+                                        <span class="badge rounded-pill border flex-shrink-0"
+                                            style="font-size:12px; color:#3E8E64; background:var(--bs-body-bg);">
+                                            Vidrio
+                                        </span>
+
+                                        <p class="small mb-0">
+                                            Botellas, frascos y tarros de vidrio.
+                                            Sin tapas metálicas ni objetos de cristal o cerámica.
+                                        </p>
+
+                                    </div>
+
+
+                                    <div class="d-flex gap-3 p-2 rounded-3 align-items-center"
+                                        style="background:var(--bs-tertiary-bg);">
+
+                                        <span class="badge rounded-pill border flex-shrink-0"
+                                            style="font-size:12px; color:#3E8E64; background:var(--bs-body-bg);">
+                                            Metales
+                                        </span>
+
+                                        <p class="small mb-0">
+                                            Latas de aluminio, aerosoles vacíos, tapas metálicas,
+                                            utensilios de metal sin piezas plásticas.
+                                        </p>
+
+                                    </div>
+
+
+                                    <div class="d-flex gap-3 p-2 rounded-3 align-items-center"
+                                        style="background:var(--bs-tertiary-bg);">
+
+                                        <span class="badge rounded-pill border flex-shrink-0"
+                                            style="font-size:12px; color:#3E8E64; background:var(--bs-body-bg);">
+                                            Tetra Pak
+                                        </span>
+
+                                        <p class="small mb-0">
+                                            Envases de leche, jugo, caldos.
+                                            Vacíos, enjuagados y aplastados.
+                                        </p>
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- Residuos húmedos -->
+                    <div class="accordion-item">
+
+                        <h2 class="accordion-header">
+
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                data-bs-target="#categoria_humedos">
+
+                                <span class="rounded-3 d-inline-flex align-items-center justify-content-center me-3"
+                                    style="width:42px; height:42px; background:var(--bs-tertiary-bg);">
+
+                                    <span class="rounded-circle"
+                                        style="width:16px; height:16px; background:#2B6B50; display:inline-block;">
+                                    </span>
+
+                                </span>
+
+                                <span>
+
+                                    <strong class="d-block" style="font-size:15px;">
+                                        Residuos Húmedos (Orgánicos)
+                                    </strong>
+
+                                    <span class="text-body-secondary" style="font-size:12px;">
+                                        Contenedor gris / negro de residuos comunes
+                                    </span>
+
+                                </span>
+
+                                <span class="badge rounded-pill ms-auto me-3"
+                                    style="background:var(--bs-tertiary-bg); color:#3E8E64;">
+                                    3 elementos
+                                </span>
+
+                            </button>
+
+                        </h2>
+
+
+                        <div id="categoria_humedos" class="accordion-collapse collapse"
+                            data-bs-parent="#acordeon_categorias">
+
+                            <div class="accordion-body">
+
+                                <p class="text-body-secondary small">
+                                    Van al contenedor gris o negro de residuos comunes.
+                                    La IM trabaja en sistemas de compostaje urbano para su tratamiento.
+                                </p>
+
+
+                                <div class="d-flex flex-column gap-2">
+
+                                    <div class="d-flex gap-3 p-2 rounded-3 align-items-center"
+                                        style="background:var(--bs-tertiary-bg);">
+                                        <span class="badge rounded-pill border flex-shrink-0"
+                                            style="font-size:12px; color:#3E8E64; background:var(--bs-body-bg);">
+                                            Restos de comida
+                                        </span>
+
+                                        <p class="small mb-0">
+                                            Cáscaras de frutas y verduras, restos de cocción,
+                                            yerba, café molido.
+                                        </p>
+
+                                    </div>
+
+
+                                    <div class="d-flex gap-3 p-2 rounded-3 align-items-center"
+                                        style="background:var(--bs-tertiary-bg);">
+
+                                        <span class="badge rounded-pill border flex-shrink-0"
+                                            style="font-size:12px; color:#3E8E64; background:var(--bs-body-bg);">
+                                            Restos de jardín
+                                        </span>
+
+                                        <p class="small mb-0">
+                                            Hojas, ramas pequeñas, pasto.
+                                            Las ramas grandes van a recolección diferenciada.
+                                        </p>
+
+                                    </div>
+
+
+                                    <div class="d-flex gap-3 p-2 rounded-3 align-items-center"
+                                        style="background:var(--bs-tertiary-bg);">
+
+                                        <span class="badge rounded-pill border flex-shrink-0"
+                                            style="font-size:12px; color:#3E8E64; background:var(--bs-body-bg);">
+                                            Pañales y servilletas
+                                        </span>
+
+                                        <p class="small mb-0">
+                                            No son reciclables; van al residuo general
+                                            en bolsa bien cerrada.
+                                        </p>
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- Residuos especiales -->
+                    <div class="accordion-item">
+
+                        <h2 class="accordion-header">
+
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                data-bs-target="#categoria_especiales">
+
+                                <span class="rounded-3 d-inline-flex align-items-center justify-content-center me-3"
+                                    style="width:42px; height:42px; background:var(--bs-tertiary-bg);">
+
+                                    <span class="rounded-circle"
+                                        style="width:16px; height:16px; background:#1B4D52; display:inline-block;">
+                                    </span>
+
+                                </span>
+
+                                <span>
+
+                                    <strong class="d-block" style="font-size:15px;">
+                                        Residuos Especiales
+                                    </strong>
+
+                                    <span class="text-body-secondary" style="font-size:12px;">
+                                        Puntos de entrega habilitados por la IM
+                                    </span>
+
+                                </span>
+
+                                <span class="badge rounded-pill ms-auto me-3"
+                                    style="background:var(--bs-tertiary-bg); color:#1B4D52;">
+                                    6 elementos
+                                </span>
+
+                            </button>
+
+                        </h2>
+
+
+                        <div id="categoria_especiales" class="accordion-collapse collapse"
+                            data-bs-parent="#acordeon_categorias">
+
+                            <div class="accordion-body">
+
+                                <p class="text-body-secondary small">
+                                    No van al contenedor verde ni al gris.
+                                    Requieren entrega en puntos específicos habilitados
+                                    por la Intendencia.
+                                </p>
+
+
+                                <div class="d-flex flex-column gap-2">
+
+                                    <div class="d-flex gap-3 p-2 rounded-3 align-items-center"
+                                        style="background:var(--bs-tertiary-bg);">
+
+                                        <span class="badge rounded-pill border flex-shrink-0"
+                                            style="font-size:12px; color:#3E8E64; background:var(--bs-body-bg);">
+                                            Pilas y baterías
+                                        </span>
+
+                                        <p class="small mb-0">
+                                            Se entregan en los colectores rojos habilitados
+                                            en supermercados, farmacias y dependencias de la IM.
+                                        </p>
+
+                                    </div>
+
+
+                                    <div class="d-flex gap-3 p-2 rounded-3 align-items-center"
+                                        style="background:var(--bs-tertiary-bg);">
+
+                                        <span class="badge rounded-pill border flex-shrink-0"
+                                            style="font-size:12px; color:#3E8E64; background:var(--bs-body-bg);">
+                                            Medicamentos vencidos
+                                        </span>
+
+                                        <p class="small mb-0">
+                                            Se devuelven en farmacias adheridas al plan
+                                            "Medicamento Seguro" de la IM.
+                                        </p>
+
+                                    </div>
+
+
+                                    <div class="d-flex gap-3 p-2 rounded-3 align-items-center"
+                                        style="background:var(--bs-tertiary-bg);">
+
+                                        <span class="badge rounded-pill border flex-shrink-0"
+                                            style="font-size:12px; color:#3E8E64; background:var(--bs-body-bg);">
+                                            Aceite vegetal usado
+                                        </span>
+
+                                        <p class="small mb-0">
+                                            Se lleva en botellas cerradas a los Puntos Verdes.
+                                            No tirar por la pileta.
+                                        </p>
+
+                                    </div>
+
+
+                                    <div class="d-flex gap-3 p-2 rounded-3 align-items-center"
+                                        style="background:var(--bs-tertiary-bg);">
+
+                                        <span class="badge rounded-pill border flex-shrink-0"
+                                            style="font-size:12px; color:#3E8E64; background:var(--bs-body-bg);">
+                                            Ropa y calzado
+                                        </span>
+
+                                        <p class="small mb-0">
+                                            Contenedores azules de la IM o donación
+                                            en centros MIDES/RAP.
+                                        </p>
+
+                                    </div>
+
+
+                                    <div class="d-flex gap-3 p-2 rounded-3 align-items-center"
+                                        style="background:var(--bs-tertiary-bg);">
+
+                                        <span class="badge rounded-pill border flex-shrink-0"
+                                            style="font-size:12px; color:#3E8E64; background:var(--bs-body-bg);">
+                                            Electrónicos (RAEEs)
+                                        </span>
+
+                                        <p class="small mb-0">
+                                            Computadoras, celulares, TV.
+                                            Puntos de entrega habilitados por la IM y fabricantes.
+                                        </p>
+
+                                    </div>
+
+
+                                    <div class="d-flex gap-3 p-2 rounded-3 align-items-center"
+                                        style="background:var(--bs-tertiary-bg);">
+
+                                        <span class="badge rounded-pill border flex-shrink-0"
+                                            style="font-size:12px; color:#3E8E64; background:var(--bs-body-bg);">
+                                            Escombros
+                                        </span>
+
+                                        <p class="small mb-0">
+                                            Se solicita retiro gratuito a través del 1950
+                                            o la web de la IM.
+                                        </p>
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- Recordatorio -->
+                <div class="card bg-body shadow-sm animate-fade-up delay-300 mt-4">
+
+                    <div class="card-body d-flex gap-3">
+
+                        <div class="rounded-3 bg-primary d-flex align-items-center justify-content-center flex-shrink-0"
+                            style="width:40px; height:40px;">
+
+                            <i class="bi bi-exclamation-circle text-white"></i>
+
+                        </div>
+
+                        <div>
+
+                            <p class="fw-bold mb-1" style="font-size:14px;">
+                                Recuerda
+                            </p>
+
+                            <p class="text-body-secondary small mb-0" ">
+
+                                Los residuos secos deben estar
+                                <strong class=" text-body">limpios y secos</strong>
+                                antes de depositarlos.
+
+                                Un envase con restos de comida contamina todo el
+                                contenedor de reciclaje.
+
+                                Ante dudas, llama al
+                                <strong class="text-primary">1950</strong>
+                                (gratuito, lun–vie 8:00–20:00).
+
+                            </p>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+    <!-- Sección Historial -->
+    <section id="seccion_historial" class="bg-body">
+        <div class="px-3 py-5">
+
+            <div class="text-center mb-4 animate-fade-up">
+                <a href="#" class="text-body-secondary text-decoration-none small fw-semibold">
+                    ↑ Volver arriba
+                </a>
+                <h2 class="fw-bold mt-2 mb-2">Historial de reclamos</h2>
+                <p class="text-body-secondary mb-0">
+                    Consultá el estado de tus reclamos.
+                </p>
+            </div>
+
+            <div class="mx-auto animate-fade-up" style="max-width: 900px;">
+                <div id="contenedor_tabla_incidencias">
+                    <div id="tabla_incidencias" class="table-responsive">
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- Trabaja con nosotros -->
+    <section id="trabaja" style="background: linear-gradient(135deg, #1B4D52, #2B6B50);">
+        <div class="container-xxl px-3 py-5">
+
+            <div class="text-center text-white mb-5 animate-fade-up">
+                <a href="#" class="text-white text-decoration-none small fw-semibold">
+                    ↑ Volver arriba
+                </a>
+                <h2 class="fw-bold mt-2 mb-2">Trabaja con nosotros</h2>
+                <p class="text-white-50 mb-0">
+                    Sumate al equipo de SiGeRu.
+                </p>
+            </div>
+
+            <div class="row g-4 align-items-start">
+
+                <div class="col-lg-6 animate-slide-right">
+
+                    <div class="text-white">
+                        <span class="fw-bold small text-uppercase">
+                            Oportunidades
+                        </span>
+
+                        <h3 class="fw-bold my-2 fs-3">
+                            Formá parte de nuestro equipo
+                        </h3>
+
+                        <p class="mb-4 text-white-50">
+                            Súmate al equipo de SiGeRu. Buscamos personas comprometidas con
+                            la innovación tecnológica y el impacto social en la gestión urbana
+                            de Montevideo.
+                        </p>
+
+                        <div
+                            class="p-3 rounded-3 bg-dark bg-opacity-25 border border-light border-opacity-25 small text-white-50">
+                            Gud Engine S.A.S trabaja con organismos públicos e intendencias.
+                            Si tenés perfil en tecnología, datos o gestión pública,
+                            queremos conocerte.
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="card bg-body shadow-sm animate-fade-up delay-200">
+                        <div class="card-body p-4">
+                            <form id="form_postulacion" class="d-flex flex-column gap-3">
+                                <h3 class="fw-semibold mb-1 fs-6">
+                                    Postulación
+                                </h3>
+                                <input class="form-control" type="email" placeholder="E-mail" required>
+
+                                <input class="form-control" type="text" placeholder="Nombre completo" required>
+
+                                <input class="form-control" type="text" placeholder="Área de interés o comentario">
+
+                                <button type="submit" class="btn btn-success w-100">
+                                    Enviar postulación
+                                </button>
+
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="text-white pt-5 pb-4 mt-auto" style="background-color: #1B4D52;">
+        <div class="container-xxl px-3">
+            <div class="row g-5">
+                <div class="col-md-4">
+                    <div class="d-flex align-items-center gap-3 mb-3">
+                        <div class="bg-white bg-opacity-10 rounded-3 p-2 d-inline-flex">
+                            <img src="../img/logo.png" alt="SiGeRu" width="32" height="32">
+                        </div>
+                        <div>
+                            <p class="fw-bold mb-0 font-serif">SiGeRu</p>
+                            <p class="mb-0 text-white-50" style="font-size: 11px;">Sistema de Gestión de Residuos
+                                Urbanos</p>
+                        </div>
+                    </div>
+                    <p class="text-white-50" style="line-height: 1.6;">
+                        Una plataforma desarrollada por <strong class="text-white">Gud Engine S.A.S</strong> para
+                        la Intendencia de Montevideo, orientada a optimizar la gestión de residuos urbanos.
+                    </p>
+                </div>
+                <div class="col-md-4">
+                    <h6 class="text-uppercase text-white-50 mb-3" style="font-size:11px; letter-spacing:.1em;">Servicios
+                    </h6>
+                    <ul class="list-unstyled d-flex flex-column gap-2 text-white-50">
+                        <li>Hacer un reclamo</li>
+                        <li>Mapa de contenedores</li>
+                        <li>Guía de clasificación</li>
+                        <li>Historial de reclamos</li>
+                    </ul>
+                </div>
+                <div class="col-md-4">
+                    <h6 class="text-uppercase text-white-50 mb-3" style="font-size:11px; letter-spacing:.1em;">Contacto
+                    </h6>
+                    <div class="d-flex flex-column gap-2 text-white-50">
+                        <p class="mb-0">Organismo: Intendencia de Montevideo</p>
+                        <p class="mb-0">Teléfono: 1950 (gratuito)</p>
+                        <p class="mb-0">Web: montevideo.gub.uy</p>
+                        <p class="mb-0">Desarrollado por: Gud Engine S.A.S</p>
+                    </div>
+                </div>
+            </div>
+            <hr class="border-white-50 mt-5">
+            <p class="text-center text-white-50 mb-0" style="font-size:12px;">© 2026 SiGeRu · Intendencia de Montevideo.
+                Todos los derechos reservados.</p>
+        </div>
+    </footer>
+    <!-- Bootstrap JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.3/js/bootstrap.bundle.min.js"></script>
+    <script>
+
+        // Modo oscuro
+        document.getElementById('cambiar_tema').addEventListener('click', function () {
+            const es_oscuro = document.documentElement.getAttribute('data-bs-theme') === 'dark';
+            const nuevo_tema = es_oscuro ? 'light' : 'dark';
+
+            document.documentElement.setAttribute('data-bs-theme', nuevo_tema);
+            localStorage.setItem('sigeru_theme', nuevo_tema);
+
+            this.innerHTML = nuevo_tema === 'dark'
+                ? '<i class="bi bi-sun-fill"></i>'
+                : '<i class="bi bi-moon-stars-fill"></i>';
+        });
+
+        // Verificar sesión
+        fetch('../controlador/api_tokens.php/verificar')
+            .then(response => response.json())
+            .then(respuesta => {
+
+                if (respuesta.usr_name) {
+                    document.getElementById('zona_autenticacion').innerHTML = `
+                        <span class="badge rounded-pill text-bg-light border d-none d-sm-inline-block">
+                            ${respuesta.usr_name}
+                        </span>
+                        <button type="button" id="btn_logout" class="btn btn-link btn-sm text-danger text-decoration-none p-0">
+                            Salir
+                        </button>
+                    `;
+
+                    document.getElementById('btn_logout').addEventListener('click', function () {
+                        document.cookie = 'token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/';
+                        window.location.reload();
+                    });
+                }
+
+            })
+            .catch(error => {
+                console.error('Error al verificar la sesión:', error);
+            });
+
+        // Formulario de postulación
+        document.getElementById('form_postulacion').addEventListener('submit', function (e) {
+            e.preventDefault();
+
+            alert('Postulación enviada — te contactaremos pronto.');
+            this.reset();
+        });
+
+    </script>
+
+    <!--Cargar Incidencias-->
+    <script>
+
+        const API_INCIDENCIAS = '../controlador/api_incidencias.php';
+
+        function cargarIncidencias() {
+            fetch(`${API_INCIDENCIAS}/mias`)
+                .then(response => response.json())
+                .then(data => {
+                    const tbody = document.getElementById('tabla_incidencias');
+
+                    if (!tbody) return;
+
+                    tbody.innerHTML = '';
+
+                    if (!data || data.length === 0 || data.mensaje) {
+                        tbody.innerHTML = `<p class="text-center text-muted py-3">No tenés reclamos registrados.</p>`;
+                        return;
+                    }
+
+                    loadIncidencias(data);
+                })
+                .catch(err => console.error("Error al cargar incidencias:", err));
+        }
+        document.addEventListener("DOMContentLoaded", cargarIncidencias);
+
+    </script>
+
+    <!--Llenar la tabla-->
+    <script>
+        function loadIncidencias(data) {
+            console.log(data)
+            let table = document.createElement("table");
+            table.className = "table table-hover align-middle";
+
+            // Encabezados
+            let headers = ["ID", "Tema", "Estado", "Descripción", "Fecha de apertura", "Fecha de cierre"];
+
+            let header_row = table.insertRow();
+            header_row.className = "table-light text-uppercase small font-weight-bold";
+
+            headers.forEach(h => {
+                let th = document.createElement("th");
+                th.innerHTML = h;
+                header_row.appendChild(th);
+            });
+
+            // Filas
+            data.forEach(i => {
+                let row = table.insertRow();
+
+                row.insertCell().innerHTML = `<span class="fw-bold">${i.inc_id}</span>`;
+                row.insertCell().innerHTML = i.inc_tema;
+
+                // Celda del estado
+                let estado_cell = row.insertCell();
+
+                let badge_estado = "";
+
+                if (i.inc_estado === "abierta") {
+                    badge_estado = "bg-warning text-dark";
+                } else if (i.inc_estado === "espera") {
+                    badge_estado = "bg-secondary";
+                } else {
+                    badge_estado = "bg-success";
+                }
+
+                estado_cell.innerHTML = `
+                <span class="badge ${badge_estado} text-uppercase">
+                    ${i.inc_estado}
+                </span>
+            `;
+
+                row.insertCell().innerHTML = i.inc_descripcion;
+                row.insertCell().innerHTML = i.inc_fecha_hora;
+                row.insertCell().innerHTML = i.inc_fecha_hora_cierre ?? "—";
+            });
+
+            let dvTable = document.getElementById("tabla_incidencias");
+
+            if (dvTable) {
+                dvTable.innerHTML = "";
+                dvTable.appendChild(table);
+            }
+        }
+    </script>
+
+    <!--registrar incidencia-->
+    <script>
+        document.getElementById('form_reclamo').addEventListener('submit', function (e) {
+            e.preventDefault();
+
+            const municipio = document.getElementById('incidencia_municipio').value.trim();
+            const tema = document.getElementById('incidencia_tema').value.trim();
+            const tipo_residuo = document.getElementById('incidencia_tipo_residuo').value.trim();
+            const calle = document.getElementById('incidencia_calle').value.trim();
+            const puerta = document.getElementById('incidencia_num_puerta').value.trim();
+
+            const descripcion = document.getElementById('incidencia_descripcion').value.trim();
+
+            if (!municipio) {
+                alert("⚠️ Debe seleccionar un municipio.");
+                document.getElementById('incidencia_municipio').focus();
+                return;
+            }
+
+            if (!tema) {
+                alert("⚠️ Debe seleccionar un tema.");
+                document.getElementById('incidencia_tema').focus();
+                return;
+            }
+
+            if (!tipo_residuo) {
+                alert("⚠️ Debe seleccionar un tipo de contenedor/basura.");
+                document.getElementById('incidencia_tipo_residuo').focus();
+                return;
+            }
+
+            if (!calle) {
+                alert("⚠️ Debe ingresar la calle y número de puerta.");
+                document.getElementById('incidencia_calle').focus();
+                return;
+            }
+
+            if (!descripcion) {
+                alert("⚠️ Debe ingresar una descripción de la incidencia.");
+                document.getElementById('incidencia_descripcion').focus();
+                return;
+            }
+
+            if (descripcion.length > 500) {
+                alert("⚠️ La descripción no puede superar los 500 caracteres.");
+                document.getElementById('incidencia_descripcion').focus();
+                return;
+            }
+            const regex_numeros = /^\d+$/;
+
+            if (!regex_numeros.test(puerta) || puerta <= 0) {
+                alert("⚠️ El número de puerta debe ser un número entero mayor a 0.");
+                document.getElementById('incidencia_num_puerta').focus();
+                return;
+            }
+
+
+            const nueva_incidencia = {
+                inc_tema: tema,
+                inc_tipo_residuo: tipo_residuo,
+                inc_descripcion: descripcion,
+                inc_municipio: municipio,
+                inc_calle: calle,
+                inc_puerta: puerta
+            };
+
+            fetch(`${API_INCIDENCIAS}/incidencias`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(nueva_incidencia)
+            })
+                .then(response => {
+                    return response.json();
+                })
+                .then(respuesta => {
+
+                    alert(respuesta.mensaje);
+
+                    if (respuesta.mensaje.includes("con éxito")) {
+                        document.getElementById('form_reclamo').reset();
+                        cargarIncidencias();
+                    }
+                })
+                .catch(err => {
+
+                    console.error("Error al registrar incidencia:", err);
+                    alert("Hubo un fallo crítico al conectar con la API.");
+
+                });
+        });
+    </script>
+
+    <script>
+        let mapa_circuitos;
+        let marcadores = {}; // Guardaremos los puntos marcados en el mapa, así después hago cosas
+      
+        function cargarCircuitos() {
+            fetch('../controlador/api_circuitos.php/circuitos')
+                .then(response => response.json())
+                .then(circuitos => {
+                    if (!mapa_circuitos) {
+                        mapa_circuitos = L.map('mapa_circuitos').setView([-34.90, -56.16], 12);
+
+                        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                            attribution: '&copy; OpenStreetMap'
+                        }).addTo(mapa_circuitos);
+                    }
+
+                    const poligonos = {};
+
+                    circuitos.forEach(circuito => {
+
+                        //circuito es un objeto, circuito.poli_id accede al id del poligono del circuito
+                        //poligono es un diccionario clave:valor, la clave circuito tiene todo el objeto circuito 
+                        //cuyo indice es igual a circuito.poli_id
+                        if (!poligonos[circuito.poli_id]) {
+                            poligonos[circuito.poli_id] = {
+                                circuito: circuito,
+                                coordenadas: []
+                            };
+                        }
+                        poligonos[circuito.poli_id].coordenadas.push([
+                            Number(circuito.pv_latitud),
+                            Number(circuito.pv_longitud)
+                        ]);
+                    });
+
+                    Object.values(poligonos).forEach(poligono => {
+                        //manda a leaflet a hacer un poligono con esta lista de coordenadas
+                        L.polygon(poligono.coordenadas)
+                            .addTo(mapa_circuitos)
+                            .bindPopup(`
+                        <strong>Circuito ${poligono.circuito.circ_id}</strong><br>
+                        Tipo: ${poligono.circuito.circ_tipo}<br>
+                        Municipio: ${poligono.circuito.zona_municipio}
+                    `);
+                    });
+                    cargarContenedores();
+                })
+                .catch(error => {
+                    console.error("Error al cargar los circuitos:", error);
+                    alert("⚠️ No se pudieron cargar los circuitos.");
+                });
+        }
+        document.addEventListener("DOMContentLoaded", cargarCircuitos);
+          
+        function cargarContenedores() {
+            const icono_verde = L.icon({
+            iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-green.png',
+            iconSize: [25, 41]
+
+        });
+            fetch('../controlador/api_contenedores.php/contenedores')
+                .then(response => response.json())
+                .then(contenedores => {
+                    contenedores.forEach(contenedor=>{
+                        console.log(contenedor.cont_latitud);
+                    if(!marcadores[contenedor.cont_id]) {
+                    const marker = L.marker([parseFloat(contenedor.cont_latitud), parseFloat(contenedor.cont_longitud)],icono_verde).addTo(mapa_circuitos);
+
+                    }
+
+                    })
+
+                })
+                .catch(error => {
+                    console.error("Error al cargar los contenedores:", error);
+                    alert("⚠️ No se pudieron cargar los contenedores.");
+                });
+        }
+    </script>
+
+
+    <!-- Script de Leaflet (Mapa) -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+</body>
+
+</html>

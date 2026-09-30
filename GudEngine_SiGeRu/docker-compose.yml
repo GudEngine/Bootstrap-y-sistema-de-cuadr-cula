@@ -1,0 +1,29 @@
+version: '3.9'
+
+services:
+  web:
+    build: .
+    container_name: gudengine_web
+    ports:
+      - "8080:80"
+    environment:
+      DB_HOST: db
+    depends_on:
+      - db
+    restart: always
+
+  db:
+    image: mysql:8.0
+    container_name: gudengine_db
+    environment:
+      MYSQL_ROOT_PASSWORD: contraseña
+      MYSQL_DATABASE: urbin
+    ports:
+      - "3600:3306"
+    volumes:
+      - ./controlador/urbin_database.sql:/docker-entrypoint-initdb.d/urbin_database.sql
+      - db_data:/var/lib/mysql
+    restart: always
+
+volumes:
+  db_data:
